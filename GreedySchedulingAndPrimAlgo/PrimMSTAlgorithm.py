@@ -34,9 +34,14 @@ def PrimMST(adjacencyList):
     nodesSpanned = {0 : 1}
     edgeLengthTotal = 0
     edgesCrossingCut = []
+    vertexSmallestEdges = {}
     for edge in adjacencyList[0]:
-        candidateEdge = [edge[1], edge[0]]
-        heapq.heappush(edgesCrossingCut, candidateEdge)
+        candidateVertex = edge[0]
+        candidateEdgeLength = edge[1]
+        candidateEdge = [candidateEdgeLength, candidateVertex]
+        if candidateVertex not in vertexSmallestEdges or vertexSmallestEdges[candidateVertex] > candidateEdgeLength:
+            vertexSmallestEdges[candidateVertex] = candidateEdgeLength
+            heapq.heappush(edgesCrossingCut, candidateEdge)
     ##Init Done
     while edgesCrossingCut != []:
         newEdge = heapq.heappop(edgesCrossingCut)
@@ -45,8 +50,12 @@ def PrimMST(adjacencyList):
             nodesSpanned[newVert] = 1
             edgeLengthTotal += newEdge[0]
             for edge in adjacencyList[newVert]:
-                candidateEdge = [edge[1], edge[0]]
-                heapq.heappush(edgesCrossingCut, candidateEdge)
+                candidateVertex = edge[0]
+                candidateEdgeLength = edge[1]
+                candidateEdge = [candidateEdgeLength, candidateVertex]
+                if candidateVertex not in vertexSmallestEdges or vertexSmallestEdges[candidateVertex] > candidateEdgeLength:
+                    vertexSmallestEdges[candidateVertex] = candidateEdgeLength
+                    heapq.heappush(edgesCrossingCut, candidateEdge)
     return edgeLengthTotal
 
 edgeLengthSum = PrimMST(adjacencyList)
