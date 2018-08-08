@@ -1,17 +1,18 @@
-# clusterDataSmall = []
-# with open("clustering1txt", 'r') as file:
-#     for line in file:
-#         splitline = line.split()
-#         if len(splitline) == 1:
-#             numNodes = int(splitline[0])
-#         if len(splitline) == 3:
-#             v1 = int(splitline[0])-1
-#             v2 = int(splitline[1])-1
-#             edgeLength = int(splitline[2])
-#             clusterDataSmall.append([edgeLength, v1, v2])
-            
+clusterDataSmall = []
+with open("clustering1.txt", 'r') as file:
+    for line in file:
+        splitline = line.split()
+        if len(splitline) == 1:
+            numNodes = int(splitline[0])
+        if len(splitline) == 3:
+            v1 = int(splitline[0])-1
+            v2 = int(splitline[1])-1
+            edgeLength = int(splitline[2])
+            clusterDataSmall.append([edgeLength, v1, v2])
+
 class disjointSet():
-    def __init__(self):
+    def __init__(self, node):
+        self.node = node
         self.parent = self
         self.size = 1
         
@@ -33,10 +34,22 @@ class disjointSet():
             leader.parent = otherLeader
             otherLeader.size += leader.size
             
-x1 = disjointSet()
-x2 = disjointSet()
-print(x1.find())
-print(x2.find())
-x1.union(x2)
-print(x2.find())
-print(x1.size)
+def kruskalClustering(edges, numNodes,numClusters):
+    edges.sort()
+    nodes = []
+    for node in range(numNodes):
+        nodes.append(disjointSet(node))
+    clusters = numNodes
+    for edge in edges:
+        node1 = nodes[edge[1]]
+        node2 = nodes[edge[2]]
+        if node1.find() != node2.find():
+            if clusters <= numClusters:
+                spacing = edge[0]
+                return spacing
+            node1.union(node2)
+            clusters -= 1
+            
+spacing = kruskalClustering(clusterDataSmall, numNodes, 4)
+print(spacing)
+          
