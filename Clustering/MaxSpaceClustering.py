@@ -1,3 +1,7 @@
+#This is first coding assignment for Algorithms II from Stanford Lagunita
+#The task is to implement max space clustering using union-find
+#And produce the max-spacing of 4 clusters in a small dataset
+
 clusterDataSmall = []
 with open("clustering1.txt", 'r') as file:
     for line in file:
