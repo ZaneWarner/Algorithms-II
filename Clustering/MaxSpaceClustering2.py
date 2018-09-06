@@ -3,19 +3,21 @@
 #And produce the largest number of clusters such that max-spacing is 3
 #With the caveat that the dataset is so large that all the edges cannot be stored explicitly in memory
 
-nodes = {}
+nodes = []
 with open("clustering_big.txt", 'r') as file:
     for line in file:
         splitline = line.split()
         if len(splitline) != 2:
-            intline = []
-            for char in splitline:
-                intline.append(int(char))
-            nodes[line] = intline
+            line = line[:-2]
+            nodes.append(line)
+            
+
+nodes.sort()
 
 class disjointSet():
-    def __init__(self, node):
-        self.node = node
+    def __init__(self, nodekey):
+        self.nodekey = nodekey
+        self.node = list(map(int, nodekey.split()))
         self.parent = self
         self.size = 1
         
@@ -48,26 +50,47 @@ def generateDifferences(length, differences):
         for i in generateDifferences(length-1, differences-1):
             yield [1] + i
             
-def neighbors(node, distance):
+def calculateNeighbors(node, distance):
     differences = generateDifferences(len(node), distance)
     neighbors = []
     for dif in differences:
-        neighbors.append(list(map(lambda x, y: x ^ y, dif, node)))
+        neighbor = (list(map(lambda x, y: x ^ y, dif, node)))
+        neighbors.append(" ".join(list(map(str, neighbor))))
     return neighbors
-
-print(neighbors([1, 1, 0, 0], 1))
             
-def kruskalClustering(nodes, maxSpacing):
-    disjointSets = []
+def kruskalClustering(nodes):
+    disjointSets = {}
     for node in nodes:
-        disjointSets.append(disjointSet(node))
+        disjointSets[node] = disjointSet(node)
     clusters = len(nodes)
-    for edge in edges:
-        node1 = nodes[edge[1]]
-        node2 = nodes[edge[2]]
-        if node1.find() != node2.find():
-            if clusters <= numClusters:
-                spacing = edge[0]
-                return spacing
-            node1.union(node2)
-            clusters -= 1
+    for key in nodes:
+        currentSet = disjointSets[key]
+        neighbors = calculateNeighbors(currentSet.node, 1)
+        for neighborKey in neighbors:
+            if neighborKey > currentSet.nodekey:
+                if neighborKey in disjointSets:
+                    neighbor = disjointSets[neighborKey]
+                    if currentSet.find() != neighbor.find():
+                        currentSet.union(neighbor)
+                        clusters -= 1
+                        if clusters % 1 == 0:
+                            print("clusters remaining: {}".format(clusters))
+    print("exhausted edges of length 1")
+    for key in nodes:
+        currentSet = disjointSets[key]
+        neighbors = calculateNeighbors(currentSet.node, 2)
+        for neighborKey in neighbors:
+            if neighborKey > currentSet.nodekey: 
+                if neighborKey in disjointSets:
+                    neighbor = disjointSets[neighborKey]
+                    if currentSet.find() != neighbor.find():
+                        currentSet.union(neighbor)
+                        clusters -= 1
+                        if clusters % 1 == 0:
+                            print("clusters remaining: {}".format(clusters))
+    print("exhausted edges of length 2")
+    return clusters
+    
+print(kruskalClustering(nodes))
+
+                    
