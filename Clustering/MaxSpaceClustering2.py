@@ -11,7 +11,6 @@ with open("clustering_big.txt", 'r') as file:
             line = line[:-2]
             nodes.append(line)
             
-
 nodes.sort()
 
 class disjointSet():
@@ -59,13 +58,19 @@ def calculateNeighbors(node, distance):
     return neighbors
             
 def kruskalClustering(nodes):
+    clusters = len(nodes)
+    duplications = 0
     disjointSets = {}
     for node in nodes:
-        disjointSets[node] = disjointSet(node)
-    clusters = len(nodes)
+        if node not in disjointSets:
+            disjointSets[node] = disjointSet(node)
+        else:
+            clusters -= 1
+            duplications += 1
+            print("duplications {}".format(duplications))
     for key in nodes:
         currentSet = disjointSets[key]
-        neighbors = calculateNeighbors(currentSet.node, 1)
+        neighbors = calculateNeighbors(currentSet.node, 1) + calculateNeighbors(currentSet.node, 2) 
         for neighborKey in neighbors:
             if neighborKey > currentSet.nodekey:
                 if neighborKey in disjointSets:
@@ -73,22 +78,8 @@ def kruskalClustering(nodes):
                     if currentSet.find() != neighbor.find():
                         currentSet.union(neighbor)
                         clusters -= 1
-                        if clusters % 1 == 0:
+                        if clusters % 100  == 0:
                             print("clusters remaining: {}".format(clusters))
-    print("exhausted edges of length 1")
-    for key in nodes:
-        currentSet = disjointSets[key]
-        neighbors = calculateNeighbors(currentSet.node, 2)
-        for neighborKey in neighbors:
-            if neighborKey > currentSet.nodekey: 
-                if neighborKey in disjointSets:
-                    neighbor = disjointSets[neighborKey]
-                    if currentSet.find() != neighbor.find():
-                        currentSet.union(neighbor)
-                        clusters -= 1
-                        if clusters % 1 == 0:
-                            print("clusters remaining: {}".format(clusters))
-    print("exhausted edges of length 2")
     return clusters
     
 print(kruskalClustering(nodes))
