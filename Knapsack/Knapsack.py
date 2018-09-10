@@ -2,12 +2,21 @@
 #The task is to implement dynamic programming algorithms for two instances of the knapsack problem, 
 #one large and one small
 
-knapsackSmall = []
-with open("knapsack1.txt", 'r') as file:
+# knapsackSmall = []
+# with open("knapsack1.txt", 'r') as file:
+#     lines = iter(file)
+#     knapsackSize, nItems = map(int, next(lines).split())
+#     for line in lines:
+#         knapsackSmall.append(list(map(int, line.split())))
+
+import sys
+
+knapsackLarge = []
+with open("knapsack_big.txt", 'r') as file:
     lines = iter(file)
     knapsackSize, nItems = map(int, next(lines).split())
     for line in lines:
-        knapsackSmall.append(list(map(int, line.split())))
+        knapsackLarge.append(list(map(int, line.split())))
     
 memo = {}
 def Knapsack(size, items):
@@ -40,6 +49,7 @@ def Knapsack(size, items):
     else:
         memo[(size, nItems)] = valueUnpicked
         return valueUnpicked
-    
-v = Knapsack(knapsackSize, knapsackSmall)
+
+sys.setrecursionlimit(4000) 
+v = Knapsack(knapsackSize, knapsackLarge)
 print(v)
