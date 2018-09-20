@@ -1,4 +1,4 @@
-#This is first coding assignment for Algorithms II from Stanford Lagunita
+#This is second coding assignment for Algorithms II from Stanford Lagunita
 #The task is to implement a greedy algorithm for scheduling tasks to minimize a weighted sum of completion times
 #We sort tasks by weight-length, breaking ties by scheduling higher-weight tasks first, then arbitrarily
 #It is not guaranteed to compute an optimal solution
